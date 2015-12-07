@@ -139,6 +139,5 @@ int main(int argc, char ** argv) {
 
     eval_instruction(get_output_instruction(0));
 
-    for(c = 0; c<1000;c++)
-    printf("Result %d %d\n", c, wires[c]);
+    printf("Result %d\n", wires[0]);
 }
