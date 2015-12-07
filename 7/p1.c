@@ -42,12 +42,14 @@ instruction * get(int wire) {
 short eval(int wire, int type) {
     instruction * i = get(wire);
 
-    printf("%d %d\n", wire, type);
+    printf("%d\n", wire);
     if (!type) return wire;
     if (wires_eval[i->output]) return wires[i->output];
 
+
     if (i->type == 5) {
         wires[i->output] = eval(i->op1, i->op1_t);
+        printf("wire:%d type:%d op1:%d op1_t:%d = %d\n", wire, type, i->op1, i->op1_t, wires[i->output]);
     } else if (i->type == 4) {
         eval(i->op1, i->op1_t);
         wires[i->output] = wires[i->op1] >> i->op3;
@@ -108,7 +110,7 @@ int main(int argc, char ** argv) {
             instr[c].op1_t = 1;
             instr[c].op1 = scalar(op1);
         } else {
-            instr[c].op2_t = 0;
+            instr[c].op1_t = 0;
             instr[c].op1 = atoi(op1);
         }
         
