@@ -4,19 +4,15 @@
 
 typedef struct instruction {
     int type;
-    int op1;
-    int op2;
-    int op3;
-    int op1_t;
-    int op2_t;
-    int output_wire;
+    char op1[64];
+    char op2[64];
+    unsigned short output;
 } instruction;
 
-instruction instruction_set[1000];
-unsigned short wires[1000];
-char wires_eval[1000];
+instruction instr[1000];
+unsigned short w[1000];
 
-int wire_to_int(char * wire) {
+int scalar(char * wire) {
     int result = 0;
     int i;
 
@@ -27,117 +23,76 @@ int wire_to_int(char * wire) {
     return result;
 }
 
-instruction get_output_instruction(int wire) {
+instruction * get(char * str) {
     int i = 0;
 
-    for(i = 0; i < 1000; i++) {
-        if (instruction_set[i].output_wire == wire) {
-            printf("%d\n", instruction_set[i].output_wire);
-            return instruction_set[i];
-        }
+		int wire = atoi(str);
+
+		if (!wire && *str && *str != '0') {
+			wire = scalar(str);
+
+	    for(i = 0; i < 1000; i++) {
+ 	       if (instr[i].output == wire) {
+ 	           return &instr[i];
+ 	       }
+ 	    }
+	  }
+
+    return NULL;
+}
+
+// evaluates the given instruction
+unsigned short eval(instruction * i) {
+
+		if (w[i->output]) return w[i->output];
+
+		unsigned short op1 = get(i->op1) == NULL ? atoi(i->op1) : eval(get(i->op1));
+    unsigned short op2 = get(i->op2) == NULL ? atoi(i->op2) : eval(get(i->op2));
+
+    if (i->type == 5) {
+        return w[i->output] = op1;
+    } else if (i->type == 4) {
+        return w[i->output] = op1 >> op2; 
+    } else if (i->type == 3) {
+        return w[i->output] = op1 << op2;
+    } else if (i->type == 2) {
+        return w[i->output] = ~op1; 
+    } else if (i->type == 1) {
+        return w[i->output] = op1 | op2;
+    } else if (i->type == 0) {
+        return w[i->output] = op1 & op2;
     }
+
+    return w[i->output];
+
 }
-
-int is_active(int wire) {
-    return wires_eval[wire];
-}
-
-
-void print_instr(instruction i) {
-    printf("type: %d output wire: %d - wire1:%d wire2:%d - op:%d\n", i.type, i.output_wire, i.op1, i.op2, i.op3);
-    printf("output wire value: %d\n", wires[i.output_wire]);
-}
-void eval_instruction(instruction i) {
-
-
-    if (i.type == 5) {
-        if(i.op1_t)  eval_instruction(get_output_instruction(i.op1));
-        wires[i.output_wire] = ((i.op1_t) ? wires[i.op1] : i.op1 ) ;
-    } else if (i.type == 4) {
-        eval_instruction(get_output_instruction(i.op1));
-        wires[i.output_wire] = wires[i.op1] >> i.op3;
-    } else if (i.type == 3) {
-        eval_instruction(get_output_instruction(i.op1));
-        wires[i.output_wire] = wires[i.op1] << i.op3;
-    } else if (i.type == 2) {
-        eval_instruction(get_output_instruction(i.op1));
-        wires[i.output_wire] = ~wires[i.op1];
-    } else if (i.type == 1) {
-        eval_instruction(get_output_instruction(i.op1));
-        eval_instruction(get_output_instruction(i.op2));
-         wires[i.output_wire] = wires[i.op1] | wires[i.op2];
-    } else if (i.type == 0) {
-        if (i.op1_t) eval_instruction(get_output_instruction(i.op1));
-        if (i.op2_t) eval_instruction(get_output_instruction(i.op2));
-        wires[i.output_wire] = ((i.op1_t) ? wires[i.op1] : i.op1 ) & ((i.op2_t) ? wires[i.op2] : i.op2_t);;
-    }
-    
-    print_instr(i);
-    wires_eval[i.output_wire] = 1;
-}
-
 
 int main(int argc, char ** argv) {
-    char left_side[64];
-    char right_side[64];
-    char attr_wire;
-    char op1[64];
-    char op2[64];
-    int op3;
+    char left[64], right[64];
     int c = 0;
 
-    for(c = 0; c < 1000; c++) instruction_set[c].output_wire = -1;
-
-    c = 0;
-    while(scanf("%20[0-9a-zA-Z ] -> %s\n", left_side, right_side) != -1) {
-        if (strstr(left_side, "AND")) {
-            sscanf(left_side, "%s AND %s", op1, op2);
-            instruction_set[c].type = 0;
-        } else if (strstr(left_side, "OR")) {
-            sscanf(left_side, "%s OR %s", op1, op2);
-            instruction_set[c].type = 1;
-        } else if (strstr(left_side, "NOT")) {
-            sscanf(left_side, "NOT %s", &op1);
-            instruction_set[c].type = 2;
-        } else if (strstr(left_side, "LSHIFT")){
-             sscanf(left_side, "%s LSHIFT %d", op1, &op3);
-            instruction_set[c].type = 3;
-        } else if (strstr(left_side, "RSHIFT")){
-            sscanf(left_side, "%s RSHIFT %d", op1, &op3);
-            instruction_set[c].type = 4;
+    while(scanf("%20[0-9a-zA-Z ] -> %s\n", left, right) != -1) {
+        if (strstr(left, "AND")) {
+            sscanf(left, "%s AND %s", instr[c].op1, instr[c].op2);
+            instr[c].type = 0;
+        } else if (strstr(left, "OR")) {
+            sscanf(left, "%s OR %s", instr[c].op1, instr[c].op2);
+            instr[c].type = 1;
+        } else if (strstr(left, "NOT")) {
+            sscanf(left, "NOT %s", instr[c].op1);
+            instr[c].type = 2;
+        } else if (strstr(left, "LSHIFT")){
+            sscanf(left, "%s LSHIFT %s", instr[c].op1, instr[c].op2);
+            instr[c].type = 3;
+        } else if (strstr(left, "RSHIFT")){
+            sscanf(left, "%s RSHIFT %s", instr[c].op1, instr[c].op2);
+            instr[c].type = 4;
         } else {
-            sscanf(left_side, "%s", &op1);
-            instruction_set[c].type = 5;
+            sscanf(left, "%s", instr[c].op1);
+            instr[c].type = 5;
         }
 
-
-        instruction_set[c].output_wire = wire_to_int(right_side);
-
-        if (op1[0]-'a' >= 0) {
-            instruction_set[c].op1_t = 1;
-            instruction_set[c].op1 = wire_to_int(op1);
-        } else {
-            instruction_set[c].op1 = atoi(op1);
-        }
-        
-        if (op2[0]-'a' >= 0) {
-            instruction_set[c].op2_t = 1;
-            instruction_set[c].op2 = wire_to_int(op2);
-        } else {
-            instruction_set[c].op2 = atoi(op2);
-        }
-
-
-        instruction_set[c].op3 = op3;
-
-        print_instr(instruction_set[c]);
-        c++;
-        op3 = -1;
+        instr[c++].output = scalar(right);
     }   
-
-    printf("EVAL %d!!!\n", 0);
-
-    eval_instruction(get_output_instruction(0));
-
-    printf("Result %d\n", wires[0]);
+    printf("%d\n", eval(get("a")));
 }
