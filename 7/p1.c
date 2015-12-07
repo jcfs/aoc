@@ -2,7 +2,9 @@
 #include <string.h>
 #include <math.h>
 
-typedef struct instruction {
+unsigned short w[1000];
+
+typedef struct {
     int type;
     char op1[64];
     char op2[64];
@@ -10,19 +12,20 @@ typedef struct instruction {
 } instruction;
 
 instruction instr[1000];
-unsigned short w[1000];
 
-int scalar(char * wire) {
+// convert a string to its scalar value "a" -> 0, "aa" -> 26
+int scalar(char * str) {
     int result = 0;
     int i;
 
-    for(i = 1; i <= strlen(wire); i++) { 
-        result += (wire[i-1]-'a')+(strlen(wire)-i)*26*(wire[i-1]-'a'+1);
+    for(i = 1; i <= strlen(str); i++) { 
+        result += (str[i-1]-'a')+(strlen(str)-i)*26*(str[i-1]-'a'+1);
     }
 
     return result;
 }
 
+// get and instucrion by its output 
 instruction * get(char * str) {
     int i = 0;
 
