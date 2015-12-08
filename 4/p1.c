@@ -4,6 +4,7 @@
 int main(int argc, char ** argv)
 {
 	unsigned char c[MD5_DIGEST_LENGTH];
+ 	MD5_CTX mdContext;
 	char out[64];
 	char * format = "bgvyzdsv%d\0";
 	int index = 250000;
@@ -14,7 +15,7 @@ int main(int argc, char ** argv)
 		MD5_Update (&mdContext, out, strlen(out));
 		MD5_Final(c, &mdContext);
 
-		if (!c[0] && !c[1] && !(c[2])) {
+		if (!c[0] && !c[1] && !(c[2] & 0xF0)) {
 			break;
 		}
 
