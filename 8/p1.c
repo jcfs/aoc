@@ -1,11 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
-
-#include <regex.h>
-
-
-
 
 int main(int argc, char ** argv) {
     char line[128];
