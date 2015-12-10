@@ -4,7 +4,7 @@ int m[100][100];
 char v[100];
 int lpath, spath = 10000;
 int p;
-
+int a;
 int all_visited() {
     int i = 0;
     for(i = 0; i <= p; i++) 
@@ -25,6 +25,7 @@ int sp(int s, int dist) {
 
     for(i = 0; i <= p; i++) {
         if (m[s][i] && !v[i]) {
+            a++;
             sp(i, dist + m[s][i]);
         }
     }
@@ -43,5 +44,5 @@ int main(int argc, char ** argv) {
 
     for(i = 0; i <= p; i++) sp(i, 0);
 
-    printf("%d %d\n", spath, lpath);
+    printf("%d %d %d\n", spath, lpath, a);
 }
