@@ -24,7 +24,6 @@ int sp(int s, int dist) {
 
     for(i = 0; i <= p; i++) {
         if (m[s][i] && !v[i]) {
-            a++;
             sp(i, dist + m[s][i]);
         }
     }
