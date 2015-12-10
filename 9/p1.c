@@ -4,12 +4,11 @@ int m[100][100];
 char v[100];
 int lpath, spath = 10000;
 int p;
-int a;
+
 int all_visited() {
     int i = 0;
     for(i = 0; i <= p; i++) 
         if (!v[i]) return 0;
-
     return 1;
 }
 
@@ -33,8 +32,7 @@ int sp(int s, int dist) {
 }
 
 int main(int argc, char ** argv) {
-    int i, j;
-    int s, d, c;
+    int i, s, d, c;
 
     while(scanf("%d %d %d\n", &s, &d, &c) != -1) {
         m[s][d] = m[d][s] = c;
@@ -44,5 +42,5 @@ int main(int argc, char ** argv) {
 
     for(i = 0; i <= p; i++) sp(i, 0);
 
-    printf("%d %d %d\n", spath, lpath, a);
+    printf("%d %d\n", spath, lpath);
 }
