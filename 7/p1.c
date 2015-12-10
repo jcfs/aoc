@@ -47,7 +47,7 @@ instruction * get(char * str) {
 // evaluates the given instruction
 unsigned short eval(instruction * i) {
 
-    //if (w[i->output]) return w[i->output];
+    if (w[i->output]) return w[i->output];
 
     unsigned short op1 = get(i->op1) == NULL ? atoi(i->op1) : eval(get(i->op1));
     unsigned short op2 = get(i->op2) == NULL ? atoi(i->op2) : eval(get(i->op2));
