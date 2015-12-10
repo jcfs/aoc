@@ -3,7 +3,7 @@
 int m[100][100];
 char v[100];
 int lpath, spath = 10000;
-int p, st;
+int p;
 
 int all_visited() {
     int i = 0;
@@ -13,21 +13,19 @@ int all_visited() {
     return 1;
 }
 
-int sp(int s) {
+int sp(int s, int dist) {
     int i = 0;
 
     v[s] = 1;
 
     if (all_visited()) {
-        if (st > lpath) lpath = st;
-        if (st < lpath) spath = st;
+        if (dist > lpath) lpath = dist;
+        if (dist < lpath) spath = dist;
     }
 
     for(i = 0; i <= p; i++) {
         if (m[s][i] && !v[i]) {
-            st += m[s][i];
-            sp(i);
-            st -= m[s][i];
+            sp(i, dist + m[s][i]);
         }
     }
     v[s] = 0;
@@ -43,7 +41,7 @@ int main(int argc, char ** argv) {
         if (d > p) p = d;
     }
 
-    for(i = 0; i <= p; i++) sp(i);
+    for(i = 0; i <= p; i++) sp(i, 0);
 
     printf("%d %d\n", spath, lpath);
 }
