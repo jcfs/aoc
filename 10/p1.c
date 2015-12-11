@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-char o[1000000000];
-char d[1000000000];
+char o[10000000];
+char d[10000000];
 
 int main(int argc, char ** argv) {
 
@@ -15,12 +15,10 @@ int main(int argc, char ** argv) {
 
     sprintf(o, "%s", "1321131112");
 
-    src = o;
+    src = s = o;
     dst = d;
 
-    for(j = 0; j <= 50; j++) {
-        s = src;
-        printf("%d %d\n", j, strlen(s)); 
+    for(j = 0; j <= 50; s = src) {
         for(bw = 0, i = 0, count = 1; s[i]; ) {
             ch = s[i];
             if (ch == s[++i])
@@ -31,6 +29,7 @@ int main(int argc, char ** argv) {
             }
         }
 
+        printf("%d %d\n", ++j, strlen(dst)); 
         src = dst;
         dst = s;
     }
