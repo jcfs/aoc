@@ -5,9 +5,7 @@ int totals[5] = {0};
 
 int main(int argc, char ** argv) {
     int i, j, k, w, u, r;
-    int ing, pop;
-    int t1, t2, t3, t4;
-    long long max = -1, mul;
+    long long max = 0, mul;
 
     int input[4][5] = { 
         {4, -2, 0, 0, 5},
@@ -26,32 +24,25 @@ int main(int argc, char ** argv) {
                 spoons[2] = k;
                 spoons[3] = w;
 
-                if (i*input[0][4]+j*input[1][4]+k*input[2][4]+w*input[3][4] != 500) continue;
-
-                for(u = 0; u < 4; u++) 
-                    totals[u] = 0;
+                // calories must be 500
+                if (i*input[0][4]+j*input[1][4]+k*input[2][4]+w*input[3][4] != 500) 
+                    continue;
 
                 for(r = 0; r < 4; r++) {
+                    totals[r] = 0;
                     for(u = 0; u < 4; u++) {
                         totals[r] += spoons[u] * input[u][r];
                     }
                 }
 
-                mul = 1;
-                for(u = 0; u < 4; u++) {
-                    if (totals[u] < 0) 
-                        totals[u] = 0;
+                for(mul = 1, u = 0; u < 4; u++) {
+                    if (totals[u] < 0) break;
                     mul *= totals[u];
                 }
 
                 if (mul > max) {
-                    printf("%d %d %d %d=%lld : spoons %d %d %d %d\n", totals[0], totals[1], totals[2], totals[3], mul, i, j, k, w);
                     max = mul;
                 }
-
-
             }
-
-
     printf("%ld\n", max);
 }
