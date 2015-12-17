@@ -10,7 +10,7 @@ int times = 0;
 int fill(int current, int c, int cont) {
     int i = 0;
 
-//    if (current > reach) return;
+    if (current > reach) return;
 
     if (current == reach) {
         if (cont < min) {
@@ -24,8 +24,7 @@ int fill(int current, int c, int cont) {
 
     for(i=c+1;i<20;i++) {
         if (array[i] != -1) {
-            int g = array[i];
-            fill(current + g, i, cont + 1);
+            fill(current + array[i], i, cont + 1);
         }
     }
 }
