@@ -5,8 +5,7 @@ void increase(char * str) {
     int i = 0;
 
     for(i = 7; i >= 0; i--) {
-        str[i]++;
-        if (str[i] > 'z') str[i] = 'a';
+        if (++str[i] > 'z') str[i] = 'a';
         else break;
     }
 }
