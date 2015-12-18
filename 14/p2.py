@@ -10,7 +10,6 @@ for line in openfileobject:
         h[rd] = (int(speed), int(time), int(rest))
         pos[rd] = (int(rest), int(time), 'moving', 0, 0)
 
-print h
 md = 0
 mp = 0
 for i in range(1, 2504):
@@ -31,11 +30,13 @@ for i in range(1, 2504):
         pos[rd] = (r, t, status, d, p)
         md = max(d, md)
 
+
     for rd in pos.keys():
         r, t, status, d, p = pos[rd];
         if (d == md):
             p += 1
             mp = max(p, mp)
+            print i-1, rd, p;
         pos[rd] = (r, t, status, d, p)
 
 print mp
