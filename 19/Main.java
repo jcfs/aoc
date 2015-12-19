@@ -8,171 +8,171 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-	private static final Pattern PATTERN = Pattern.compile("(\\w+)\\ =>\\ (\\w+)");
+  private static final Pattern PATTERN = Pattern.compile("(\\w+)\\ =>\\ (\\w+)");
 
-	private static String str = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSi"
-			+ "RnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlAr"
-			+ "BCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArB"
-			+ "CaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr";
+  private static String str = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSi"
+    + "RnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlAr"
+    + "BCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArB"
+    + "CaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr";
 
-	private static List<Replacement> l = new ArrayList<Replacement>();
+  private static List<Replacement> l = new ArrayList<Replacement>();
 
-	public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String[] args) throws IOException, InterruptedException {
 
-		List<String> lines = Files.readAllLines(Paths.get("in"));
-		for (String line : lines) {
-			Matcher matcher = PATTERN.matcher(line);
-			if (matcher.matches()) {
-				l.add(new Replacement(matcher.group(1), matcher.group(2)));
+    List<String> lines = Files.readAllLines(Paths.get("in"));
+    for (String line : lines) {
+      Matcher matcher = PATTERN.matcher(line);
+      if (matcher.matches()) {
+        l.add(new Replacement(matcher.group(1), matcher.group(2)));
 
-			}
-		}
+      }
+    }
 
-		TreeSet<Node> openSet = new TreeSet<Node>();
-		TreeSet<Node> closedSet = new TreeSet<Node>();
+    TreeSet<Node> openSet = new TreeSet<Node>();
+    TreeSet<Node> closedSet = new TreeSet<Node>();
 
-		openSet.add(new Node(str, 0, heur(str, "e")));
+    openSet.add(new Node(str, 0, heur(str, "e")));
 
-		while (!openSet.isEmpty()) {
-			Node current = openSet.first();
+    while (!openSet.isEmpty()) {
+      Node current = openSet.first();
 
-			if (current.getS().equals("e")) {
-				System.out.println(current.getCost());
-				System.exit(0);
-			}
+      if (current.getS().equals("e")) {
+        System.out.println(current.getCost());
+        System.exit(0);
+      }
 
-			openSet = remove(current, openSet);
-			
-			if (!contains(current, closedSet)) {
-				closedSet.add(current);
-			}
+      openSet = remove(current, openSet);
 
-			for (Replacement rep : l) {
-				int offset = 0;
-				while ((offset = current.getS().indexOf(rep.getRepee(), offset)) >= 0) {
-					int length = rep.getRepee().length();
-					Node neightbor = new Node(replaceAtOffSet(current.getS(), rep.getRep(), offset, length), Integer.MAX_VALUE, Integer.MAX_VALUE);
-					offset += length;
+      if (!contains(current, closedSet)) {
+        closedSet.add(current);
+      }
 
-					if (contains(neightbor, closedSet)) {
-						continue;
-					}
+      for (Replacement rep : l) {
+        int offset = 0;
+        while ((offset = current.getS().indexOf(rep.getRepee(), offset)) >= 0) {
+          int length = rep.getRepee().length();
+          Node neightbor = new Node(replaceAtOffSet(current.getS(), rep.getRep(), offset, length), Integer.MAX_VALUE, Integer.MAX_VALUE);
+          offset += length;
 
-					int ncost = current.getCost() + 1;
+          if (contains(neightbor, closedSet)) {
+            continue;
+          }
 
-					if (!contains(neightbor, openSet)) {
-						openSet.add(neightbor);
-					} else if (ncost > neightbor.getCost()) {
-						continue;
-					}
+          int ncost = current.getCost() + 1;
 
-					neightbor.setCost(ncost);
-					neightbor.setScore(ncost + heur(neightbor.getS(), "e"));
-				}
-			}
-		}
-	}
+          if (!contains(neightbor, openSet)) {
+            openSet.add(neightbor);
+          } else if (ncost > neightbor.getCost()) {
+            continue;
+          }
 
-	private static TreeSet<Node> remove(Node n, TreeSet<Node> set) {
-		TreeSet<Node> result = new TreeSet<Node>();
-		for (Node node : set) {
-			if (!n.getS().equals(node.getS())) {
-				result.add(node);
-			}
-		}
-		return result;
-	}
-	
-	private static boolean contains(Node n, TreeSet<Node> set) {
-		for (Node node : set) {
-			if (n.getS().equals(node.getS())) {
-				return true;
-			}
-		}
-		return false;
-	}
+          neightbor.setCost(ncost);
+          neightbor.setScore(ncost + heur(neightbor.getS(), "e"));
+        }
+      }
+    }
+  }
 
-	private static int heur(String str2, String string) {
-		return str2.length() - string.length();
-	}
+  private static TreeSet<Node> remove(Node n, TreeSet<Node> set) {
+    TreeSet<Node> result = new TreeSet<Node>();
+    for (Node node : set) {
+      if (!n.getS().equals(node.getS())) {
+        result.add(node);
+      }
+    }
+    return result;
+  }
 
-	public static String replaceAtOffSet(String str, String replace, int offset, int repLength) {
-		return str.substring(0, offset) + replace + str.substring(offset + repLength);
-	}
+  private static boolean contains(Node n, TreeSet<Node> set) {
+    for (Node node : set) {
+      if (n.getS().equals(node.getS())) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	public static class Node implements Comparable<Node> {
-		private String s;
-		private int cost;
-		private int score;
+  private static int heur(String str2, String string) {
+    return str2.length() - string.length();
+  }
 
-		Node(String s, int cost, int score) {
-			this.s = s;
-			this.cost = cost;
-			this.score = score;
-		}
+  public static String replaceAtOffSet(String str, String replace, int offset, int repLength) {
+    return str.substring(0, offset) + replace + str.substring(offset + repLength);
+  }
 
-		@Override
-		public int hashCode() {
-			return s.hashCode();
-		}
+  public static class Node implements Comparable<Node> {
+    private String s;
+    private int cost;
+    private int score;
 
-		@Override
-		public boolean equals(Object obj) {
-			return s.equals(((Node) obj).getS());
-		}
+    Node(String s, int cost, int score) {
+      this.s = s;
+      this.cost = cost;
+      this.score = score;
+    }
 
-		@Override
-		public int compareTo(Node o) {
-			return o.getS().equals(this.getS()) ? 0 : (o.score < this.score ? 1 : -1);
-		}
+    @Override
+    public int hashCode() {
+      return s.hashCode();
+    }
 
-		public String getS() {
-			return s;
-		}
+    @Override
+    public boolean equals(Object obj) {
+      return s.equals(((Node) obj).getS());
+    }
 
-		public void setS(String s) {
-			this.s = s;
-		}
+    @Override
+    public int compareTo(Node o) {
+      return o.getS().equals(this.getS()) ? 0 : (o.score < this.score ? 1 : -1);
+    }
 
-		public int getCost() {
-			return cost;
-		}
+    public String getS() {
+      return s;
+    }
 
-		public void setCost(int cost) {
-			this.cost = cost;
-		}
+    public void setS(String s) {
+      this.s = s;
+    }
 
-		public int getScore() {
-			return score;
-		}
+    public int getCost() {
+      return cost;
+    }
 
-		public void setScore(int score) {
-			this.score = score;
-		}
-	}
+    public void setCost(int cost) {
+      this.cost = cost;
+    }
 
-	public static class Replacement implements Comparable<Replacement> {
+    public int getScore() {
+      return score;
+    }
 
-		private String rep;
-		private String repee;
+    public void setScore(int score) {
+      this.score = score;
+    }
+  }
 
-		Replacement(String rep, String repee) {
-			this.rep = rep;
-			this.repee = repee;
-		}
+  public static class Replacement implements Comparable<Replacement> {
 
-		public String getRep() {
-			return rep;
-		}
+    private String rep;
+    private String repee;
 
-		public String getRepee() {
-			return repee;
-		}
+    Replacement(String rep, String repee) {
+      this.rep = rep;
+      this.repee = repee;
+    }
 
-		@Override
-		public int compareTo(Replacement o) {
-			return (o.getRepee().length() > this.getRepee().length() ? 1 : -1);
-		}
-	}
+    public String getRep() {
+      return rep;
+    }
+
+    public String getRepee() {
+      return repee;
+    }
+
+    @Override
+    public int compareTo(Replacement o) {
+      return (o.getRepee().length() > this.getRepee().length() ? 1 : -1);
+    }
+  }
 }
 
