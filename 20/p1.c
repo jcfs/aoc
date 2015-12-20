@@ -18,7 +18,6 @@ int main(int argc, char ** argv) {
           count+=(house/i)*10;
         }
       }
-
     }
 
     printf("%d %dd\n", house, count);
