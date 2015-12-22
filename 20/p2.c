@@ -19,5 +19,4 @@ int main(int argc, char ** argv) {
   }
 
   printf("%d %d\n", house-1, count);
-
 }
