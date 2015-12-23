@@ -32,6 +32,9 @@ int main(int argc, char ** argv) {
 
     while(inst[pc].opcode[0] != 0) {
         if (!strncmp(inst[pc].opcode, "inc", 3)) reg[inst[pc].op1[0]-'a']++;
+        if (!strncmp(inst[pc].opcode, "tpl", 3)) reg[inst[pc].op1[0]-'a'] *= 3;
+        if (!strncmp(inst[pc].opcode, "hlf", 3)) reg[inst[pc].op1[0]-'a'] /= 2;
+
         if (!strncmp(inst[pc].opcode, "jio", 3)) {
             if (reg[inst[pc].op1[0]-'a']==1) {
                 pc += atoi(inst[pc].op2);
@@ -44,9 +47,7 @@ int main(int argc, char ** argv) {
                 continue;
             }
         }
- 
-        if (!strncmp(inst[pc].opcode, "tpl", 3)) reg[inst[pc].op1[0]-'a'] *= 3;
-        if (!strncmp(inst[pc].opcode, "hlf", 3)) reg[inst[pc].op1[0]-'a'] /= 2;
+
         if (!strncmp(inst[pc].opcode, "jmp", 3)) {
             pc +=atoi(inst[pc].op1);
             continue;
@@ -55,8 +56,8 @@ int main(int argc, char ** argv) {
         pc++;
     }
 
-    printf("%d\n", reg[0]);
-    printf("%d\n", reg[1]);
+    printf("%lld\n", reg[0]);
+    printf("%lld\n", reg[1]);
 
 
 }
