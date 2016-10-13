@@ -3,16 +3,12 @@
 int main(int argc, char ** argv) {
 
     int currentFloor = 0;
-    int currentIndex = 1;
     char ch;
 
     while(ch = getchar()) {
+	if (ch == '\n') break;
         ch == ')' ? currentFloor-- : currentFloor++;
+   }
 
-        if (currentFloor == -1) {
-            printf("%d\n", currentIndex);
-            break;
-        }
-        currentIndex++;
-    }
+   printf("%d\n", currentFloor);
 }
