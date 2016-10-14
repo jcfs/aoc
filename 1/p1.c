@@ -6,7 +6,8 @@ int main(int argc, char ** argv) {
     char ch;
 
     while(ch = getchar()) {
-	if (ch == '\n') break;
+	if (ch == '\n') 
+		break;
         ch == ')' ? currentFloor-- : currentFloor++;
    }
 
