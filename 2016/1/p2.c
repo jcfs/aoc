@@ -2,10 +2,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-// aux shit.... ty c
-#define MIN(x, y) (x < y)? x : y
-#define MAX(x, y) (x > y)? x : y
-
 #define CITY_SIZE 1000
 #define START_POS 500
 
@@ -38,7 +34,6 @@ void check_city(int x, int y) {
     exit(0);
   }
 }
-
 
 void fill_line(int begin_x, int end_x, int begin_y, int end_y) {
   int i;
