@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <openssl/md5.h>
 
-int main(int argc, char ** argv)
-{
-	unsigned char c[MD5_DIGEST_LENGTH];
- 	MD5_CTX mdContext;
-	char out[64];
-	char * format = "ugkcyxxp%d\0";
-	int index = 1;
-  char f[8] = {0};
-  int i = 0;
+int main(int argc, char ** argv) {
+  unsigned char c[MD5_DIGEST_LENGTH];
+  MD5_CTX mdContext;
+  char out[64], f[8] = {0};
+  char * format = "ugkcyxxp%d\0";
+  int index = 1, i = 0;
 
   while(i < 8) {
     MD5_Init (&mdContext);
