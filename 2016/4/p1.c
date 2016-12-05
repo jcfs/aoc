@@ -2,11 +2,11 @@
 #include <string.h>
 
 int main(int argc, char ** argv) {
-  char ch, room[100], checksum[5], alpha[26];
-  int i, j, sum, id;
+  char room[100], checksum[5];
+  int i, j, sum = 0, id;
 
   while(scanf("%s%d %s", room, &id, checksum) == 3) {
-    bzero(alpha, 26);
+    char alpha[26] = {0};
 
     for(i = 0; i < strlen(room); i++) {
       alpha[room[i]-'a']++;
