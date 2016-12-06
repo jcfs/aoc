@@ -1,30 +1,36 @@
+/* compile gcc -o p2 p2.c -Wall */
 #include <stdio.h>
 
-char input[8];
-char letters[8][26];
-unsigned int code[9] = {-1,-1,-1,-1,-1,-1,-1,-1};
+char p[8][26];
 
 int main(int argc, char ** argv) {
-  int j = 0, i = 0;
+  unsigned int code[8] = {[0 ... 7] = -1};
+  char in[9];
 
-  while(scanf("%s\n", input) != EOF) {
-    for(j = 0; j < 8; j++) {
-      ++letters[j][input[j]-'a'];
+  while(scanf("%s\n", in) != EOF) {
+    for(int j = 0; j < 8; j++) {
+      ++p[j][in[j]-'a'];
     }
   }
 
-  for(i = 0; i < 8; i++) {
-    for(j = 0; j < 26; j++) {
-      if (letters[i][j] < (code[i] & 0x0000ffff)) {
-        code[i] = (j << 16 & 0xffff0000) | (letters[i][j] & 0x0000ffff);
+  // find the maximum
+  for(int i = 0; i < 8; i++) {
+    for(int j = 0; j < 26; j++) {
+      char ch = p[i][j];
+
+      // because we are lazy we use one int to store both the max number of occurrences of
+      // a character and the character itself
+      if (ch < (code[i] & 0x0000ffff)) {
+        code[i] = ((j+0x61) << 16 & 0xffff0000) | (ch & 0x0000ffff);
       }
     }
   }
 
-  for(j = 0; j < 8; j++) {
-    printf("%c", (code[j]>>16)+'a');
+  for(int j = 0; j < 8; j++) {
+    printf("%c", *(code+j) >> 16);
   }
 
   printf("\n");
 
+  return 0;
 }
