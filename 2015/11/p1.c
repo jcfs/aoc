@@ -18,9 +18,9 @@ int main(int argc, char ** argv) {
 
     sprintf(str, "%s\0", "hxbxwxba");
 
-    regcomp(&regex[0], ".*(abc|bcd|cde|def|efg|fgh|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz).*", REG_EXTENDED);
-    regcomp(&regex[1], ".*[ilo].*", REG_EXTENDED);
-    regcomp(&regex[2], ".*([a-z])\\1.*([a-z])\\2.*", REG_EXTENDED);
+    regcomp(&regex[0], ".*(abc|bcd|cde|def|efg|fgh|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz).*", REG_EXTENDED|REG_ENHANCED);
+    regcomp(&regex[1], ".*[ilo].*", REG_EXTENDED|REG_ENHANCED);
+    regcomp(&regex[2], ".*([a-z])\\1.*([a-z])\\2.*", REG_EXTENDED|REG_ENHANCED);
 
      int last = 0;
     for(i = 0; ; i++) {
