@@ -47,12 +47,8 @@ int main(int argc, char ** argv) {
   }
 
   for(int i = 0; i < ROWS; i++) {
-    for(int j = 0; j < COLUMNS; j++) {
-      if (m[i][j] && s++) 
-        printf("#");
-      else 
-        printf(" ");
-    } 
+    for(int j = 0; j < COLUMNS; j++)
+      (m[i][j] && s++) ? printf("#") : printf(" ");
     printf("\n");
   }
 
