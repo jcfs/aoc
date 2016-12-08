@@ -24,24 +24,29 @@ int main(int argc, char ** argv) {
     regmatch_t groups[5];
 
     if (!regexec(&regex[0], str, 5, groups, 0)) {
-      char pattern[66] = {[0 ... 65] = 0};
-      char * match = get_match(str, groups[0].rm_so, groups[0].rm_eo - groups[0].rm_so);
+        printf("--------------------------------\n");
+        printf("%s\n", str);
+        char pattern[66] = {[0 ... 65] = 0};
+        int k = 0;
 
-      sprintf(pattern, "\\[[^\\]]*?%s[^\\[]*?\\]", match);
+        char * match = get_match(str, groups[k].rm_so, groups[k].rm_eo - groups[k].rm_so);
+    
+        sprintf(pattern, "\\\\[[^\\\\]]*?%s[^\\\\[]*?\\\\]", match);
 
-      printf("%s\n", pattern);
-      
-      free(match);
+        printf("%s %s\n---------------------------------------\n", match, pattern);
 
-      if (regcomp(&regex[1], pattern, REG_EXTENDED | REG_ENHANCED | REG_UNGREEDY) == -1) {
-        perror("error compiling regex");
-        exit(1);
-      }
+        free(match);
 
-      if (!regexec(&regex[1], str, 0, NULL, 0)) {
-        printf("Found on %s\n", str);
-        count++; 
-      }
+        if (regcomp(&regex[1], pattern, REG_EXTENDED | REG_ENHANCED | REG_UNGREEDY) == -1) {
+          perror("error compiling regex");
+          exit(1);
+        }
+
+        if (regexec(&regex[1], str, 0, NULL, REG_NOTBOL | REG_NOTEOL)) {
+          count++; 
+        } else {
+          printf("YES %s %s\n", pattern, str);
+        }
     } 
   }
 

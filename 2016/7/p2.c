@@ -1,97 +1,80 @@
+/* compile gcc -o p2 p2.c -Wall */
+
 #include <stdio.h>
 #include <regex.h>  
 #include <string.h>
 #include <stdlib.h>
 
+// find the kth ocurrence of the pattern ABBA in the given string 
 int check_pattern(char * str, int k, char * pattern, char * rev_pattern) {
-  int c = 1;
-
-  for(int i = 0; i < strlen(str)-2; i++) {
+  for(int i = 0; i < strlen(str) - 2; i++) {
     if (str[i] == str[i+2] && str[i] != str[i+1] && str[i] != '[' && str[i+1] != ']' && str[i] != ']' && str[i+1]!='[') {
-      if (c == k) {
-        pattern[0] = str[i];
-        pattern[1] = str[i+1];
+      if (!--k) {
+        rev_pattern[1] = (pattern[0] = str[i]);
+        rev_pattern[0] = (rev_pattern[2] = (pattern[1] = str[i+1]));
         pattern[2] = str[i+2];
-
-        rev_pattern[0] = rev_pattern[2] = pattern[1];
-        rev_pattern[1] = pattern[0];
-
         return i;
       }
-      c++;
     }
   }
 
   return -1;
 }
 
+// finds the kth ocurrence of the pattern in the given string
 int find_pattern(char * str, int k, char * pattern) {
-  int c = 1;
+  char * needle, * hay = str;
 
-  for(int i = 0; i < strlen(str)-2; i++) {
-    if (str[i] == pattern[0] && str[i+1] == pattern[1] && str[i+2] == pattern[2]) {
-      if (c == k) {
-        return i;
-      }
-      c++;
-    }
+  while((needle = strstr(hay, pattern)) != NULL) {
+    if (!--k) 
+      return needle - str;
+    
+    hay = needle + strlen(pattern);
   }
 
   return -1;
 }
 
+// checks if index k is inside brackets [] in the given string
 int check_inside(char * str, int k) {
   char inside = 0;
 
-  for(int i = 0; i < strlen(str); i++) {
-    if (str[i] == '[') inside = 1;
-    else if (str[i] == ']') inside = 0;
+  for(int i = 0; i != k && i < strlen(str); i++) 
+    inside = (str[i] == '[') ? 1 : (str[i] == ']') ? 0 : inside;
 
-    if (i == k && inside) return 1;
-    else if (i == k) return 0;
-  }
-
-  return -1;
+  return inside;
 }
 
 int main(int argc, char ** argv) {
-  regex_t regex;
-  char str[256], result[1000];
+  char str[256];
   int s = 0;
-  regmatch_t pmatch[10];
 
   while(scanf("%s\n", str) != EOF) {
-    char pattern[4] = {[0 ... 3] = 0};
-    char rev_pattern[4] = {[0 ... 3] = 0};
+    for(int p = 0, i = 1, f = 0; !f && p != -1; i++) {
+      char pattern[4] = {[0 ... 3] = 0}, rev_pattern[4] = {[0 ... 3] = 0};
 
-    for(int i = 1; ; i++) {
-      int p, u = 0, f = 0;
-      p = check_pattern(str, i, pattern, rev_pattern);
-      if (p == -1) break;
+      // lets find the pattern ABBA and return the index, the pattern found and 
+      // the reverse pattern
+      if ((p = check_pattern(str, i, pattern, rev_pattern)) >= 0) {
 
-      if (check_inside(str, p)) {
-        for(int j = 1; u != -1; j++) {
-          u = find_pattern(str, j, rev_pattern);
-          if (u == -1)
-            break;
-          if (!check_inside(str, u)) {
-            f=1;
+        // check if found pattern is inside brackets
+        char inside = check_inside(str, p);
+
+        // we iterate until we don't find any more reverse pattern or we find a match
+        for(int u = 0, j = 1; u != -1 && !f; j++) {
+
+          // lets find the reverse pattern
+          if ((u = find_pattern(str, j, rev_pattern)) >= 0) {
+            // check if the reverse pattern is inside brackets
+            char r_inside = check_inside(str, u);
+
+            // if the pattern is inside and the reverse pattern is not inside
+            // or if the pattern is not inside and the reverse is inside 
+            // we found a match
+            f = ((inside && !r_inside) || (!inside && r_inside));
           }
         }
-      } else {
-        for(int j = 1; u != -1; j++) {
-          u = find_pattern(str, j, rev_pattern);
-          if (u == -1)
-            break;
-          if (check_inside(str, u)) {
-            f=1;
-          }
-        }   
-      }
-
-      if (f) {
-        s++;
-        break;
+        if (f) s++;
       }
     } 
   }
