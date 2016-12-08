@@ -22,7 +22,7 @@ int check_pattern(char * str, int k, char * pattern, char * rev_pattern) {
 }
 
 // finds the kth ocurrence of the pattern in the given string
-int find_pattern(char * str, int k, char * pattern) {
+int strstr_k(char * str, int k, char * pattern) {
   char * needle, * hay = str;
 
   while((needle = strstr(hay, pattern)) != NULL) {
@@ -64,7 +64,7 @@ int main(int argc, char ** argv) {
         for(int u = 0, j = 1; u != -1 && !f; j++) {
 
           // lets find the reverse pattern
-          if ((u = find_pattern(str, j, rev_pattern)) >= 0) {
+          if ((u = strstr_k(str, j, rev_pattern)) >= 0) {
             // check if the reverse pattern is inside brackets
             char r_inside = check_inside(str, u);
 
