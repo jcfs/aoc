@@ -1,0 +1,28 @@
+/* compile gcc -o p1 p1.c -Wall */
+#include <stdio.h>
+#include <string.h>
+
+int main(int argc, char ** argv) {
+  char line[64335];
+
+  if (fgets(line, 64335, stdin) != NULL) {
+    long total = 0;
+
+    char * k = line;
+    char * ok = line;
+
+    while((k = strchr(ok, '(')) != NULL) {
+      total += (k - ok);
+
+      int r, g;
+      if (sscanf(k, "(%dx%d)", &r, &g) == 2) {
+        total += r * g;
+        k = strchr(k, ')') + r;    
+      }
+
+      ok = k;
+    }
+
+    printf("%ld\n", total);
+  } 
+}
