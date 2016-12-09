@@ -16,6 +16,7 @@ int main(int argc, char ** argv) {
       total += strlen(line);
 
     while((k = strchr(ok, '(')) != NULL) {
+      // sum the amount before the bracket to the total length
       total += (k - ok);
 
       int r, g;

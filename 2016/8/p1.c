@@ -34,21 +34,17 @@ int main(int argc, char ** argv) {
   char command[254];
 
   while(fgets(command, 254, stdin) != NULL) {
-    if (strstr(command, "rect") != NULL) {
-      sscanf(command, "rect %dx%d", &x, &y);
+    if (sscanf(command, "rect %dx%d", &x, &y)) 
       draw_rect(x, y);
-    } else if (strstr(command, "y=") != NULL) {
-      sscanf(command, "rotate row y=%d by %d", &x, &y);
+    else if (sscanf(command, "rotate row y=%d by %d", &x, &y))
       rotate_right(x, y);
-    } else if (strstr(command, "x=") != NULL) {
-      sscanf(command, "rotate column x=%d by %d", &x, &y);
+    else if (sscanf(command, "rotate column x=%d by %d", &x, &y))
       rotate_down(x, y);
-    }
   }
 
   for(int i = 0; i < ROWS; i++) {
     for(int j = 0; j < COLUMNS; j++)
-      (m[i][j] && s++) ? printf("#") : printf(" ");
+      (m[i][j] && ++s) ? printf("#") : printf(" ");
     printf("\n");
   }
 
