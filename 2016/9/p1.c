@@ -11,6 +11,10 @@ int main(int argc, char ** argv) {
     char * k = line;
     char * ok = line;
 
+    // extreme case when there are no brackets at all
+    if (!strchr(k, '(')) 
+      total += strlen(line);
+
     while((k = strchr(ok, '(')) != NULL) {
       total += (k - ok);
 
