@@ -10,7 +10,7 @@ uint32_t chips[300];
 
 // get the high chip of the bot
 uint32_t high(int bot) {
-  int c1 = chips[bot] & 0x0000ffff;
+  int c1 = chips[bot] & 0xffff;
   int c2 = chips[bot] >> 16;
 
   return (c1 > c2) ? c1 : c2;
@@ -18,7 +18,7 @@ uint32_t high(int bot) {
 
 // get the low chip of the bot
 uint32_t low(int bot) {
-  int c1 = chips[bot] & 0x0000ffff;
+  int c1 = chips[bot] & 0xffff;
   int c2 = chips[bot] >> 16;
 
   return (c1 < c2) ? c1 : c2;
@@ -27,12 +27,9 @@ uint32_t low(int bot) {
 void give_c(int bot, uint32_t chip) {
   uint32_t c = chips[bot];
 
-  if (c >> 16 && !(c & 0x0000ffff)) 
-    c |= (chip & 0x0000ffff);
-  else if (c & 0x0000ffff && !(c >> 16)) 
-    c |= ((chip << 16) & 0xffff0000);
-  // this else works because we never have a bot receive a chip if it already has 2
-  else c = chip;
+  // these conditions only work because we never have a bot receive a chip if it already has 2
+  if (!(c & 0xffff)) c |= (chip & 0xffff);
+  else if (!(c >> 16)) c |= (chip << 16);
 
   chips[bot] = c;
 
