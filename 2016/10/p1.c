@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 char cmd[300][80];
-uint8_t output[300];
+uint8_t out[300];
 uint32_t chips[300];
 
 // get the high chip of the bot
@@ -31,7 +31,7 @@ void give_c(int bot, uint32_t chip) {
     c |= (chip & 0x0000ffff);
   else if (c & 0x0000ffff && !(c >> 16)) 
     c |= ((chip << 16) & 0xffff0000);
-  // this else works because we never have a bot receive a chip if it already have 2
+  // this else works because we never have a bot receive a chip if it already has 2
   else c = chip;
 
   chips[bot] = c;
@@ -57,7 +57,7 @@ int main(int argc, char ** argv) {
       // the other lines are already processed
       if (sscanf(cmd[j], "bot %d", &arg1) == 1) {
         
-        // we just process if the bot have two chips already
+        // we just process the command if the bot has two chips 
         if (!low(arg1) || !high(arg1)) 
           continue;
 
@@ -66,13 +66,15 @@ int main(int argc, char ** argv) {
 
         // input parsing over and over
         if (sscanf(cmd[j], "bot %d gives low to %s %d and high to %s %d\n", &arg1, type_l, &arg2, type_h, &arg3) == 5) {
-          !strcmp(type_l, "bot") ? give_c(arg2, low(arg1)) : (output[arg2] = low(arg1)) | chip_count--;
-          !strcmp(type_h, "bot") ? give_c(arg3, high(arg1)) : (output[arg3] = high(arg1)) | chip_count--;
+          !strcmp(type_l, "bot") ? give_c(arg2, low(arg1)) : (out[arg2] = low(arg1)) | chip_count--;
+          !strcmp(type_h, "bot") ? give_c(arg3, high(arg1)) : (out[arg3] = high(arg1)) | chip_count--;
         }
+      
+        // this bot has no more chips
         chips[arg1] = 0;
       }
     }
   }
 
-  printf("Part 2: %d\n", output[0] * output[1] * output[2]);
+  printf("Part 2: %d\n", out[0] * out[1] * out[2]);
 }
