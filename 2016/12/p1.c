@@ -1,3 +1,4 @@
+/* compile with gcc -o p1 p1.c -Wall */
 #include <stdio.h>
 
 char cmd[40][200];
