@@ -1,3 +1,4 @@
+/* compile with gcc -o p1 p1.c -Wall */
 #include <stdio.h>
 
 char cmd[40][200];
@@ -24,6 +25,7 @@ int main(int agrc, char ** argv) {
     pc++;
   }
 
-  for(int j = 0; j < 4; j++) printf("Reg %c = %d\n", j + 0x61, reg[j]); 
+  for(int j = 0; j < 4; j++) 
+    printf("Reg %c = %d\n", j + 0x61, reg[j]); 
 
 } 
