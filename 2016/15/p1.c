@@ -1,3 +1,5 @@
+/* compile gcc -o p1 p1.c -Wall */
+/* solution for both part 1 and part2 */
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
