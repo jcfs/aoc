@@ -4,7 +4,7 @@
 
 #define SIZE 255
 
-uint32_t input = 1364, min = -1;
+uint32_t input = 1362, min = -1;
 uint8_t maze[SIZE][SIZE], fx = 39, fy = 31;
 
 uint8_t is_wall(uint8_t x, uint8_t y) {
