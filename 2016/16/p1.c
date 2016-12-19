@@ -17,6 +17,7 @@ char * get_checksum(char * input_s, int input_n) {
   // truncate the result to the chars needed
   a[input_n] = 0;
 
+  // calculate the checksum iteratively
   do {
     for(int i = 0, j = 0; i < input_n; i += 2, j++) 
       a[j] = (~(a[i] ^ a[i+1]) & 1) + '0';
