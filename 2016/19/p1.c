@@ -1,37 +1,37 @@
+/* compile gcc -o p1 p1.c -Wall -O3 */
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-void print_table(int table[5]) {
-  for(int i = 0; i < 5; i++) printf("elf %d has %d presents\n", i, table[i]);
-  printf("------------\n");
-}
-uint32_t table[3001330];
-int main(int argc, char ** argv) {
-  int input = 3001330, index = 0;
+typedef struct seat {
+  uint32_t elf;
+  struct seat * next;
+  struct seat * prev;
+} seat_t;
 
-  
-  for(int i = 0; i < input; i++) table[i] = 1;
-  while(1) {
-    if (!table[index]) {
-      index = (index + 1) % input;
-      continue;
-    }
-    int k = 0;
-    int j = 0;
-    for(j = (index + 1) % input;; j = (j + 1) % input) {
-      if (table[j]) {
-        k = table[j];
-        table[j] = 0;
-        break;
-      }
-    }
-    table[index] += k;
-    if (table[index] == input) {
-      printf("%d\n", index+1);
-      exit(1);
-    }
-    index = (j + 1) % input;
+int main(int argc, char ** argv) {
+  uint32_t table_size = 3001330;
+
+  // create circular linked list
+  seat_t * head = calloc(table_size, sizeof(seat_t));
+  seat_t * curr = head;
+
+  for(int i = 1; i <= table_size; i++, curr++) {
+    curr->elf = i;
+    curr->next = curr + 1;
+    curr->next->prev  = curr; 
   }
 
+  (curr-1)->next = head;
+  head->prev = (curr-1);
+  curr = head;
+
+  for(seat_t * n = curr->next; table_size > 1; curr = curr->next, table_size--) {
+    n = curr->next;
+    // remove the current element
+    n->prev->next = n->next;
+    n->next->prev = n->prev;
+  }
+
+  printf("part 1: %d\n", curr->elf);
 }
