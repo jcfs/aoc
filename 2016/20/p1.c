@@ -1,50 +1,49 @@
-/* compile gcc -o p1 p1.c -O3 -Wall */
+/* compile gcc -o p2 p2.c -O3 -Wall */
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 
 typedef struct {
-  uint32_t low;
-  uint32_t high;
+  uint64_t low;
+  uint64_t high;
 } range_t;
 
 range_t r[2000];
-uint32_t ind = 0;
 
 int compare(const void * a, const void * b) {
-  range_t * a1 = (range_t *)a;
-  range_t * b1 = (range_t *)b;
-
-  if (a1->low > b1->low) return 1;
-  else if (a1->low < b1->low) return -1;
-  else return 0;
+  return (((range_t *)a)->low > ((range_t *)b)->low) ? 1 : -1;
 }
 
 int main(int argc, char ** argv) {
-  uint32_t l, h;
+  uint64_t i = 0, k = 0;
 
-  while(scanf("%d-%d", &l, &h) == 2) {
-    r[ind].low = l;
-    r[ind].high = h;
-    ind++;
+  while(scanf("%lld-%lld", &r[k].low, &r[k].high) == 2) {
+    k++;
   }
 
-  qsort (r, ind, sizeof(range_t), compare);
+  // sort the input
+  qsort (r, k, sizeof(range_t), compare);
 
-  for(uint64_t i = 0, index = 0; i < UINT32_MAX; i++) {
-    uint32_t low = r[index].low;
-    uint32_t high = r[index].high;
+  k = 0;
+
+  while(i <= UINT32_MAX) {
+    uint64_t low = r[k].low;
+    uint64_t high = r[k].high;
 
     if (i < low) {
-      printf("part 1: %d\n", i);
-      return 0;
-    } else {
-      if (i <= high) {
-        i = high;
-        continue;
-      }
-      index++;
-      i--;
+      // if we are below the current low, then this is a valid ip address
+      // we break out of the cycle
+      break;
+    } else if (i <= high) {
+      // if we are above the low and below the high 
+      // we skip to the current high + 1
+      i = high + 1;
+    } else { 
+      // if we are above the high we keep the current ip 
+      // and proceed to the next range
+      k++;
     }
   }
+
+  printf("part 1: %lld\n", i);
 }

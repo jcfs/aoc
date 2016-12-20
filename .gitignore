@@ -4,6 +4,7 @@ p3
 p4
 p4.c
 out
+cookie
 
 *.class
 Main
