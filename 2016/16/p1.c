@@ -12,8 +12,8 @@ char * get_checksum(char * input_s, int input_n) {
   memcpy(a, input_s, l);
 
   for(; l < input_n; a[l] = '0', l = l * 2 + 1) 
-    for(int i = 0; i < l; i++) 
-      a[l * 2 - i] = (~(a[i] ^ '0') & 1);
+    for(int i = 0, l2 = l * 2; i < l; i++) 
+      a[l2 - i] = (~(a[i] ^ '0') & 1);
   // truncate the result to the chars needed
   a[input_n] = 0;
 
