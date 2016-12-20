@@ -26,8 +26,7 @@ int main(int argc, char ** argv) {
   head->prev = (curr-1);
   curr = head;
 
-  for(seat_t * n = curr->next; table_size > 1; curr = curr->next, table_size--) {
-    n = curr->next;
+  for(seat_t * n = curr->next; table_size > 1; curr = curr->next, n = curr->next, table_size--) {
     // remove the current element
     n->prev->next = n->next;
     n->next->prev = n->prev;
