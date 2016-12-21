@@ -4,56 +4,67 @@
 #include <stdlib.h>
 #include <string.h>
 
+// swap character at position x with character at position y
 void swap(char * s, int x, int y) {
-  char ch = s[x];
-  s[x] = s[y];
-  s[y] = ch;
+  s[x] ^= s[y] ^= s[x] ^= s[y];
 }
 
-void swap_l(char * s, char a, char b) {
+// swap character a with character b
+void swap_c(char * s, char a, char b) {
   for(int i = 0; i < strlen(s); i++) {
     if (s[i] == a) s[i] = b;
     else if (s[i] == b) s[i] = a;
   }
 }
 
-void rotate_l(char * s, int x) {
+// rotate the string s left x times
+void rol(char * s, int x) {
   for(int i = 0; i < x; i++) {
     for(int j = 0, t = s[0]; j < strlen(s); j++) {
-        if (j == strlen(s)-1) s[j] = t;
-        else s[j] = s[j+1];
+      s[j] = (j == strlen(s) - 1) ? t : s[j+1];
     }
   }
 }
 
-void rotate_r(char * s, int x) {
+// rotate the string s right x times
+void ror(char * s, int x) {
   for(int i = 0; i < x; i++) {
-    for(int j = 7, t = s[7]; j >= 0; j--) {
-        if (!j) s[j] = t;
-        else s[j] = s[j-1];
+    for(int j = strlen(s) - 1, t = s[strlen(s) - 1]; j >= 0; j--) {
+      s[j] = (j) ? s[j-1] : t;
     }
   }
 }
 
-void rotate_b(char * s, char a) {
-  int index = 1;
-  int t_index = 0;
-  
+// inverse function of part one function:
+// rotate the string s right X times, where X is the position
+// of character a on the string, plus one, and plus one if the character 
+// position is ge than four
+void rob(char * s, char a) {
+  int n = 1;
+  int target_n = 0;
+
   while(1) {
-   rotate_l(s, index);
+    //rotate the string left n times
+    rol(s, n);
 
-   for(t_index = 0; t_index < strlen(s); t_index++) if (s[t_index] == a) break;
-   if (t_index >= 4) t_index++;
-   t_index++;
+    // calculate the target n after the string is rotated left
+    for(target_n = 0; target_n < strlen(s); target_n++) 
+      if (s[target_n] == a) 
+        break;
 
-   if(index == t_index) break;
+    target_n += (target_n >= 4) ? 2 : 1;
 
-   // revert the process   
-   rotate_r(s, index);
-   index++;
+    //if the target n and n are then same then we successfully found
+    //the reverse of the function 
+    if(n == target_n) 
+      break;
+
+    // revert the process   
+    ror(s, n++);
   }
 }
 
+// reverts the character os the string s between x and y
 void reverse(char * s, int x, int y) {
   for(int i = 0; i <= (y-x)/2; i++) {
     char ch = s[y-i];
@@ -62,6 +73,7 @@ void reverse(char * s, int x, int y) {
   }
 }
 
+// move the character at position x to the position y
 void move(char * s, int x, int y) {
   char temp[strlen(s)];
   char ch = s[x];
@@ -69,19 +81,18 @@ void move(char * s, int x, int y) {
   // remove the character at position x
   for(int i = 0, j = 0; i < strlen(s); i++) {
     if (i != x) {
-      temp[j] = s[i];
-      j++;
+      temp[j++] = s[i];
     } 
   }
 
+  //temp now holds the original string without the character at
+  //position x which is saved in var ch
+
   // insert the character at position y
+  // we copy all the charaters in temp to s, except if we reach
+  // the index y we insert the saved ch character
   for(int i = 0, j = 0; i < strlen(s); i++) {
-    if (i != y) {
-      s[i] = temp[j];
-      j++;
-    } else {
-      s[i] = ch;
-    }
+    s[i] = (i != y) ? temp[j++] : ch;
   }
 }
 
@@ -98,10 +109,10 @@ int main(int argc, char ** argv) {
 
   while(k >= 0) {
     if (sscanf(instr[k], "swap position %d with position %d", &x, &y) == 2) swap(input, y, x);
-    if (sscanf(instr[k], "swap letter %c with letter %c", &a, &b) == 2) swap_l(input, b, a);
-    if (sscanf(instr[k], "rotate left %d steps", &x) == 1) rotate_r(input, x);
-    if (sscanf(instr[k], "rotate right %d steps", &x) == 1) rotate_l(input, x);
-    if (sscanf(instr[k], "rotate based on position of letter %c", &a) == 1) rotate_b(input, a);
+    if (sscanf(instr[k], "swap letter %c with letter %c", &a, &b) == 2) swap_c(input, b, a);
+    if (sscanf(instr[k], "rotate left %d steps", &x) == 1) ror(input, x);
+    if (sscanf(instr[k], "rotate right %d steps", &x) == 1) rol(input, x);
+    if (sscanf(instr[k], "rotate based on position of letter %c", &a) == 1) rob(input, a);
     if (sscanf(instr[k], "reverse positions %d through %d", &x, &y) == 2) reverse(input, x, y);
     if (sscanf(instr[k], "move position %d to position %d", &x, &y) == 2) move(input, y, x);
     k--;

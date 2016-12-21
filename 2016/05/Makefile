@@ -1,3 +1,3 @@
 all:
-	gcc -Wall -o p1 p1.c
-	gcc -Wall -o p2 p2.c
+	gcc -Wall -o p1 p1.c -lcrypto -O3
+	gcc -Wall -o p2 p2.c -lcrypto -O3

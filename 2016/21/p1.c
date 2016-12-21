@@ -5,9 +5,7 @@
 #include <string.h>
 
 void swap(char * s, int x, int y) {
-  char ch = s[x];
-  s[x] = s[y];
-  s[y] = ch;
+  s[x] ^= s[y] ^= s[x] ^= s[y];
 }
 
 void swap_l(char * s, char a, char b) {
@@ -36,11 +34,12 @@ void rotate_r(char * s, int x) {
 }
 
 void rotate_b(char * s, char a) {
-  int index = 0;
-  for(index = 0; index < strlen(s); index++) if (s[index] == a) break;
-  if (index >= 4) index++;
+  int n = 0;
 
-  rotate_r(s, ++index);
+  for(n = 0; n < strlen(s); n++) 
+    if (s[n] == a) break;
+
+  rotate_r(s, (n >= 4) ? n + 2 : n + 1);
 }
 
 void reverse(char * s, int x, int y) {
