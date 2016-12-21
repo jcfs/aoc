@@ -28,7 +28,7 @@ void rotate_l(char * s, int x) {
 
 void rotate_r(char * s, int x) {
   for(int i = 0; i < x; i++) {
-    for(int j = 7, t = s[7]; j >= 0; j--) {
+    for(int j = strlen(s)-1, t = s[strlen(s)-1]; j >= 0; j--) {
         if (!j) s[j] = t;
         else s[j] = s[j-1];
     }
@@ -52,9 +52,8 @@ void reverse(char * s, int x, int y) {
 }
 
 void move(char * s, int x, int y) {
+  char temp[strlen(s)];
   char ch = s[x];
-
-  char * temp = calloc(strlen(s)+1, sizeof(char));
 
   for(int i = 0, j = 0; i < strlen(s); i++) {
     if (i != x) {
@@ -89,5 +88,5 @@ int main(int argc, char ** argv) {
     if (sscanf(instr, "move position %d to position %d", &x, &y) == 2) move(input, x, y);
   }
 
-  printf("part1 %s\n", input);
+  printf("part 1 %s\n", input);
 }

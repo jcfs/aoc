@@ -63,10 +63,8 @@ void reverse(char * s, int x, int y) {
 }
 
 void move(char * s, int x, int y) {
+  char temp[strlen(s)];
   char ch = s[x];
-
-  // allocate a temp buffer
-  char * temp = calloc(strlen(s)+1, sizeof(char));
 
   // remove the character at position x
   for(int i = 0, j = 0; i < strlen(s); i++) {
@@ -109,5 +107,5 @@ int main(int argc, char ** argv) {
     k--;
   }
 
-  printf("part1 %s\n", input);
+  printf("part 2 %s\n", input);
 }
