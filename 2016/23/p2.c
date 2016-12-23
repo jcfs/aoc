@@ -1,9 +1,10 @@
 /* compile with gcc -o p2 p2.c -Wall */
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 char cmd[40][200];
-int reg[4] = {12, 0, 0, 0};
+uint64_t reg[4] = {12, 0, 0, 0};
 
 void toggle(int t) {
   if (strstr(cmd[t], "jnz")) {
@@ -45,6 +46,6 @@ int main(int agrc, char ** argv) {
   }
 
   for(int j = 0; j < 4; j++) 
-    printf("Reg %c = %d\n", j + 0x61, reg[j]); 
+    printf("Reg %c = %lld\n", j + 0x61, reg[j]); 
 
 } 
