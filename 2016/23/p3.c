@@ -3,9 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#define ARG1_V(in) ((in.reg[0]) ? reg[in.reg[0] - 'a'] : in.val[0])
-#define ARG2_V(in) ((in.reg[1]) ? reg[in.reg[1] - 'a'] : in.val[1])
-#define ARG3_V(in) ((in.reg[2]) ? reg[in.reg[2] - 'a'] : in.val[2])
+#define ARG_V(in, k) ((in.reg[k]) ? reg[in.reg[k] - 'a'] : in.val[k])
 
 int64_t reg[4] = {12, 0, 1, 0};
 
@@ -77,11 +75,11 @@ int main(int agrc, char ** argv) {
     instr in = program[pc];
 
     switch(in.code) {
-      case cpy: reg[in.reg[1] - 'a'] = ARG1_V(in); break;
+      case cpy: reg[in.reg[1] - 'a'] = ARG_V(in, 0); break;
       case inc: reg[in.reg[0] - 'a']++; break;
       case dec: reg[in.reg[0] - 'a']--; break;
-      case jnz: if (ARG1_V(in)) pc += ARG2_V(in) - 1; break;
-      case tgl: toggle_i(&program[pc + ARG1_V(in)]); break;
+      case jnz: if (ARG_V(in, 0)) pc += ARG_V(in, 1) - 1; break;
+      case tgl: toggle_i(&program[pc + ARG_V(in, 0)]); break;
       case mul: reg[in.reg[2] - 'a'] = reg[in.reg[0] - 'a'] * reg[in.reg[1] - 'a']; break;
     }
   }
