@@ -1,0 +1,6 @@
+cpy 10 a
+cpy 10 b
+cpy 12 d
+mul a b a
+dec d
+jnz d -2
