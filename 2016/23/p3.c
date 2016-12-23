@@ -80,7 +80,7 @@ int main(int agrc, char ** argv) {
       case dec: reg[in.reg[0] - 'a']--; break;
       case jnz: if (ARG_V(in, 0)) pc += ARG_V(in, 1) - 1; break;
       case tgl: toggle_i(&program[pc + ARG_V(in, 0)]); break;
-      case mul: reg[in.reg[2] - 'a'] = reg[in.reg[0] - 'a'] * reg[in.reg[1] - 'a']; break;
+      case mul: reg[in.reg[2] - 'a'] = ARG_V(in, 0) * ARG_V(in, 1); break;
     }
   }
 
