@@ -120,7 +120,7 @@ void sp(int y, int s, int cnt) {
 
   if (cnt == MAX) {
     if (s < my) 
-      my = s;
+      my = s+p[y][0];
 
     z[y] = 0;
     return;
@@ -142,7 +142,7 @@ int main(int argc, char ** argv) {
   while(fgets(m[k++], 1000, stdin)) {
     for(int i = 0; i < strlen(m[k-1]); i++) {
       int c = m[k-1][i] - '0';
-      if (c >= 0 && c <= 9 ) {
+      if (c > 0 && c < 9 ) {
         if (c > MAX) {
           MAX = c;
         }
