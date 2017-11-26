@@ -20,7 +20,7 @@ typedef struct {
   char reg[3];
 } instr;
 
-instr program[200];
+instr program[20000];
 
 // pretty print the instruction - it could be better tho
 void print_i(instr * i) {
@@ -45,7 +45,7 @@ void toggle_i(instr * i) {
 
 int main(int argc, char ** argv) {
   int64_t n = 0, pc = 0, count = 0, b_point = -1, reg_a_val;
-  char cmd[200];
+  char cmd[20000];
 
   // necessary code to run day 25
   if (argc > 1) {
@@ -88,7 +88,7 @@ int main(int argc, char ** argv) {
       case jnz: if (ARG_V(in, 0)) pc += ARG_V(in, 1) - 1; break;
       case tgl: toggle_i(&program[pc + ARG_V(in, 0)]); break;
       case mul: reg[in.reg[2] - 'a'] = ARG_V(in, 0) * ARG_V(in, 1); break;
-      case out: printf("%lld", ARG_V(in, 0));
+      case out: printf("%c", ARG_V(in, 0));
     }
   }
 
