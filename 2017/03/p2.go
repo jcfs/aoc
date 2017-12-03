@@ -7,11 +7,13 @@ import (
   . "../common"
 )
 
-func sumArround(point Tuple, m [2000][2000]int) int {
-  result := -m[point.X][point.Y]
-  for i := point.X - 1; i < point.X + 2;  i++ {
-    for j := point.Y - 1; j < point.Y + 2;  j++ {
-      result += m[i][j];
+// sum all the numbers in the cells arround the given point
+// represented by a Tuple{x, y}
+func sumArround(point Tuple, m *[2000][2000]int) int {
+  result := -(*m)[point.X][point.Y]
+  for i := -1; i < 2; i++ {
+    for j := -1; j < 2; j++ {
+      result += (*m)[point.X+i][point.Y+j];
     }
   }
 
@@ -23,13 +25,12 @@ func main() {
 
   initialPosition, m := Tuple{1000, 1000}, [2000][2000]int{}
   currentPosition := initialPosition
-  directionsIndex, i := 0, 1
+  directionsIndex, i := 1, 1
   argument, _ := strconv.Atoi(os.Args[1])
 
   // initialize directions
-  currentDirection := directions[directionsIndex]
-  nextDirection := directions[directionsIndex+1]
-  directionsIndex++
+  currentDirection := directions[directionsIndex-1]
+  nextDirection := directions[directionsIndex]
 
   for i < argument {
     m[currentPosition.X][currentPosition.Y] = i
@@ -43,8 +44,8 @@ func main() {
     }
 
     currentPosition.Add(currentDirection)
-    i = sumArround(currentPosition, m);
+    i = sumArround(currentPosition, &m);
   }
 
-  fmt.Println(i)
+  fmt.Printf("%v at %v\n", i, currentPosition)
 }
