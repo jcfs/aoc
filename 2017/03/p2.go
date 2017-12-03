@@ -1,51 +1,50 @@
 package main
 
 import (
-	"fmt"
+  "fmt"
   "os"
   "strconv"
+  . "../common"
 )
 
-type tuple struct {
-   x int
-   y int
-}
+func sumArround(point Tuple, m [2000][2000]int) int {
+  result := -m[point.X][point.Y]
+  for i := point.X - 1; i < point.X + 2;  i++ {
+    for j := point.Y - 1; j < point.Y + 2;  j++ {
+      result += m[i][j];
+    }
+  }
 
-var dirs = []tuple {
-  tuple {0, 1},
-  tuple {-1, 0},
-  tuple {0, -1},
-  tuple {1, 0}}
-
-func sum(cx int, cy int, m [2000][2000]int) int {
-  return  m[cx-1][cy-1]+m[cx][cy-1]+m[cx+1][cy-1]+m[cx+1][cy]+m[cx-1][cy]+m[cx-1][cy+1]+m[cx][cy+1]+m[cx+1][cy+1]
+  return result
 }
 
 func main() {
-  val, _ := strconv.Atoi(os.Args[1])
-  var m = [2000][2000]int{}
-  xi, yi := 1000, 1000
-  cx, cy, idx := xi, yi, 1
+  directions := []Tuple { Tuple {0, 1}, Tuple {-1, 0}, Tuple {0, -1}, Tuple {1, 0} }
 
-  curr_dir := dirs[0]
-  next_dir := dirs[1]
-  m[cx][cy] = 1
+  initialPosition, m := Tuple{1000, 1000}, [2000][2000]int{}
+  currentPosition := initialPosition
+  directionsIndex, i := 0, 1
+  argument, _ := strconv.Atoi(os.Args[1])
 
-  for {
-    cx += curr_dir.x
-    cy += curr_dir.y
+  // initialize directions
+  currentDirection := directions[directionsIndex]
+  nextDirection := directions[directionsIndex+1]
+  directionsIndex++
 
-    m[cx][cy] = sum(cx, cy, m)
+  for i < argument {
+    m[currentPosition.X][currentPosition.Y] = i
 
-    if (m[cx][cy] > val) {
-      fmt.Println(m[cx][cy]);
-      break;
+    // we if have an empty space on the next adjacent direction
+    // we change direction
+    if (m[currentPosition.X+nextDirection.X][currentPosition.Y+nextDirection.Y] == 0) {
+      directionsIndex++
+      currentDirection = nextDirection
+      nextDirection = directions[directionsIndex % len(directions)]
     }
 
-    if (m[cx+next_dir.x][cy+next_dir.y] == 0) {
-      idx++
-      curr_dir = next_dir
-      next_dir = dirs[idx % len(dirs)]
-    }
+    currentPosition.Add(currentDirection)
+    i = sumArround(currentPosition, m);
   }
+
+  fmt.Println(i)
 }
