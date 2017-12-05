@@ -17,14 +17,11 @@ func main() {
     s = append(s, val)
   }
 
-  for i := 0; i < len(s); i=pc {
-    pc += s[i]
-    s[i]++
-
+  for pc >= 0 && pc < len(s) {
+    t := pc
+    pc += s[pc]
+    s[t]++
     steps++
-    if (pc < 0 || pc > len(s)) {
-      break
-    }
   }
 
   fmt.Println(steps)

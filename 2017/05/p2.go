@@ -17,20 +17,17 @@ func main() {
     s = append(s, val)
   }
 
-  for i := 0; i < len(s); i=pc {
-    pc += s[i]
-    steps++
+  for pc >= 0 && pc < len(s) {
+    t := pc
+    pc += s[pc]
 
-    if (s[i] >= 3) {
-      s[i]--
+    if (s[t] >= 3) {
+      s[t]--
     } else {
-      s[i]++
+      s[t]++
     }
 
-
-    if (pc < 0 || pc > len(s)) {
-      break
-    }
+    steps++
   }
 
   fmt.Println(steps)
