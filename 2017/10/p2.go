@@ -36,7 +36,8 @@ func main() {
     }
   }
 
-  for val, i := 0, 0; i < 16; i++ {
+  for i := 0; i < 16; i++ {
+    val := 0
     for j := 0; j < 16; j++ {
       val = val ^ arr[i*16+j];
     }
