@@ -2,15 +2,15 @@ package main
 
 import (
   "regexp"
-	"bufio"
-	"fmt"
-	"os"
+  "bufio"
+  "fmt"
+  "os"
 )
 
 func main() {
   depth, sum := 0, 0
-	reader := bufio.NewReader(os.Stdin)
-	s, _ := reader.ReadString('\n')
+  reader := bufio.NewReader(os.Stdin)
+  s, _ := reader.ReadString('\n')
 
   s = regexp.MustCompile("!.").ReplaceAllString(s, "")
   s = regexp.MustCompile("<.*?>").ReplaceAllString(s, "")
@@ -24,5 +24,5 @@ func main() {
     }
   }
 
-	fmt.Println(sum)
+  fmt.Println(sum)
 }
