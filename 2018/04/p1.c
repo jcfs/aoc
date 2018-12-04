@@ -7,16 +7,9 @@ int si[4000][60];
 
 int main() {
   char g[100], s[100];
-  char * cmd = calloc(100, sizeof(char));
-  size_t size;
   int h, m, currentGuard, currentMin;
 
-  while(getline(&cmd, &size, stdin) != -1) {
-    sscanf(cmd, "%s %d:%d] %s", g, &h, &m, s);
-    if (h != 0) {
-      h = m = 0;
-    }
-
+  while(scanf("%s %d:%d] %s", g, &h, &m, s) != -1) {
     if (s[0] == '#') {
       sscanf(s+1, "%d", &currentGuard);
       currentMin = m;
@@ -50,5 +43,5 @@ int main() {
       hm = i;
     }
 
-  printf("%d %d %d\n", mi, hm, hm*mg);
+  printf("%d %d %d\n", mg, hm, hm*mg);
 }
