@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
-char line[60000];
-char nline[60000];
-
 int retract(char * l) {
   char stack[60000] = {0};
   int j = 0, len = strlen(l);
+
   for(int i = 0; i < len; i++) {
     if (!j) {
       stack[j++] = l[i];
@@ -23,7 +21,10 @@ int retract(char * l) {
 }
 
 int main() {
+  char line[60000];
+  char nline[60000];
   unsigned min = -1;
+
   scanf("%s", line);
   int len = strlen(line);
 
