@@ -6,9 +6,8 @@ char nline[60000];
 
 int retract(char * l) {
   char stack[60000] = {0};
-  int j = 0;
-
-  for(int i = 0; i < strlen(l); i++) {
+  int j = 0, len = strlen(l);
+  for(int i = 0; i < len; i++) {
     if (!j) {
       stack[j++] = l[i];
     } else {
@@ -25,10 +24,11 @@ int retract(char * l) {
 
 int main() {
   unsigned min = -1;
-
   scanf("%s", line);
+  int len = strlen(line);
+
   for(char c = 'a' ; c <= 'z'; c++) {
-    for(int i = 0, j = 0; i < strlen(line); i++) {
+    for(int i = 0, j = 0; i < len; i++) {
       if ((line[i]|32) != c) {
         nline[j] = line[i];
         nline[++j] = 0;
@@ -36,7 +36,6 @@ int main() {
     }
 
     int cnt = retract(nline);
-
     if (cnt < min) {
       min = cnt;
     }
