@@ -10,3 +10,9 @@ make 04/p1
 make 04/p2
 make 05/p1
 make 05/p2
+make 06/p1
+make 06/p2
+make 07/p1
+make 07/p2
+make 08/p1
+make 08/p2

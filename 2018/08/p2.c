@@ -21,7 +21,7 @@ void build(node * n) {
     n->children = calloc(c, sizeof(node*));
     for(int i = 0; i < c; i++) {
       n->children[i] = calloc(1, sizeof(node));
-      parse(n->children[i]);
+      build(n->children[i]);
     }
   }
   
