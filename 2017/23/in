@@ -1,3 +1,4 @@
+set a 1
 set b 81
 set c b
 jnz a 2

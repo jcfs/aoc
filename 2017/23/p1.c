@@ -6,12 +6,12 @@
 
 #define ARG_V(in, k) ((in.reg[k]) ? reg[in.reg[k] - 'a'] : in.val[k])
 
-int64_t reg[20] = {0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int64_t reg[26] = {0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-const char * opcode_n[9] = {"cpy", "inc", "dec", "jnz", "tgl", "mul", "out", "set", "sub"};
+const char * opcode_n[9] = {"set", "add", "mul", "mod", "rcv", "snd", "jgz", "jnz", "sub"};
 
 typedef enum {
-  cpy, inc, dec, jnz, tgl, mul, out, sub, set
+  set, add, mul, mod, rcv, snd, jgz, jnz, sub
 } opcode;
 
 typedef struct {
@@ -60,19 +60,30 @@ int main(int argc, char ** argv) {
   printf("Loaded %lld instructions [pc %lld]\n", n, pc);
   // main execution loop
   int c = 0;
+  int sent, recv;
+  int cnt = 0;
   for(pc = 0; pc < n; pc++) {
-    printf("%d ", pc);
+//    printf("%d ", pc);
     instr in = program[pc];
-    print_i(&in);
+//    print_i(&in);
     switch(in.code) {
       case set: reg[in.reg[0] - 'a'] = ARG_V(in, 1); break;
+      case jgz: if (ARG_V(in, 0) > 0) pc += (ARG_V(in, 1)-1); break;
       case jnz: if (ARG_V(in, 0)) pc += (ARG_V(in, 1)-1); break;
-      case mul: reg[in.reg[0] - 'a'] *= ARG_V(in, 1); c++;break;
-      case sub: reg[in.reg[0] - 'a'] -= ARG_V(in, 1); break;
+      case add: reg[in.reg[0] - 'a'] += ARG_V(in, 1); c++;break;
+      case sub: reg[in.reg[0] - 'a'] -= ARG_V(in, 1); c++;break;
+      case mul: reg[in.reg[0] - 'a'] *= ARG_V(in, 1); c++;cnt++;break;
+      case mod: reg[in.reg[0] - 'a'] %= ARG_V(in, 1); break;
+      case rcv: if (ARG_V(in, 0)) {
+                  printf("%d\n", sent);
+                  exit(0);
+                }
+                break;
+      case snd: sent = ARG_V(in, 0); break;
       default: printf("wtf\n");
     }
   }
 
-  printf("%d\n", c);
+  printf("%d\n", cnt);
 
 } 

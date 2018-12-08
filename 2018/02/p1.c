@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 char line[100];
 
