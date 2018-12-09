@@ -7,59 +7,54 @@ typedef struct m {
   struct m * prev;
 } marble;
 
-marble * root;
-
-int scores[1000];
+long scores[1000];
 
 int main() {
   int players, marbles;
-  int current_player;
+  int current_player = 0; 
+
+  marble * pool, * current;
 
   scanf("%d players; last marble is worth %d points\n", &players, &marbles);
 
-  root = calloc(1, sizeof(marble));
+  pool = calloc(marbles, sizeof(marble));
+  current = pool;
+  current->next = current;
+  current->prev = current;
 
-  root->v = 0;
-  root->next = root;
-  root->prev = root;
-
-  current_player = 1;
   for(int i = 1; i <= marbles; i++) {
     if (i % 23) {
-      marble * t = root;
+      marble * t = current;
       t = t->next;
-      marble * new = calloc(1, sizeof(marble));
+      marble * new = &pool[i];
       new->v = i;
       new->next = t->next;
       new->prev = t;
       t->next->prev = new;
       t->next = new;
-
-      root = new;
+      current = new;
     } else {
       scores[current_player] += i;
-      marble * t = root;
-      for(int k = 0; k < 7; k++) {
-        t = t->prev;
-      }
+      marble * t = current;
 
-      root = t->next;
+      for(int k = 0; k < 7; k++, t = t->prev);
+
+      current = t->next;
       t->next->prev = t->prev;
       t->prev->next = t->next;
 
       scores[current_player] += t->v;
     }
 
-    current_player++;
-    if (current_player > players)
-      current_player = 1;
+    current_player = (current_player + 1) % players;
   }
 
-  int m = 0;
-  for(int i = 1; i <= players; i++) {
+  long m = 0;
+  for(int i = 0; i < players; i++) {
     if (scores[i] > m)
       m = scores[i];
   }
 
-  printf("%d\n", m);
+  printf("%ld\n", m);
 }
+
