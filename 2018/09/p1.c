@@ -9,7 +9,7 @@ typedef struct m {
 
 long scores[1000];
 
-int main() {
+int main(int argc, char ** argv) {
   int players, marbles;
   int current_player = 0; 
 
