@@ -19,35 +19,31 @@ int main() {
         level %= 10;
       level -= 5;
 
-      grid[j][i] = level;
+      grid[i][j] = level + grid[i-1][j] + grid[i][j-1] - grid[i-1][j-1];
     }
   }
 
   long area;
-  unsigned min = 0;
+  int min = -1000000;
   int x_min = 0;
   int y_min;
   int z_min;
 
   for(int z = 3; z <= 3;  z++) {
-    for(int y = z - 1; y <= 300 - z - 2; y++) {
-      for(int x = z - 1; x <= 300 - z - 2; x++) {
-        area = 0;
-
-        for(int i = 0; i < z; i++)
-          for(int j = 0; j < z; j++)
-            area += grid[y+i][x+j];
+    for(int y = z; y <= 300; y++) {
+      for(int x = z; x <= 300; x++) {
+        area = grid[x][y] - grid[x-z][y] - grid[x][y-z] + grid[x-z][y-z];
 
         if (area > min) {
           min = area;
-          x_min = y;
-          y_min = x;
+          x_min = y - z + 1;
+          y_min = x - z + 1;
           z_min=z;
         }
       }
     }
   }
 
-  printf("%d,%d,%d\n", x_min, y_min, z_min);
+  printf("%d,%d,%d %d\n", x_min, y_min, z_min, min);
 
 }
