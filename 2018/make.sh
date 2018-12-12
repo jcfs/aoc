@@ -16,3 +16,9 @@ make 07/p1
 make 07/p2
 make 08/p1
 make 08/p2
+make 09/p1
+make 09/p2
+make 10/p1
+make 10/p2
+make 11/p1
+make 11/p2

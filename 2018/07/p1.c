@@ -36,7 +36,7 @@ char calculate_next(int n) {
   
 
   steps[ns] = r;
-  printf("%s\n", steps);
+
   ns++;
   return r;
 }
@@ -56,5 +56,6 @@ int main() {
   for(int i = 0; i < 26; i++)
     calculate_next(n);
 
+  printf("%s\n", steps);
 
 }

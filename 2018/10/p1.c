@@ -40,9 +40,10 @@ int main() {
 
     if (((x_max - x_min) * (y_max-y_min)) < d_min) {
       d_min = ((x_max - x_min) * (y_max-y_min));
-      printf("new min %d %d\n", d_min, h);
+
 
       if (d_min < 1000) {
+        printf("%d\n", d_min);
         for(int i = y_min; i <= y_max; i++) {
           for(int j = x_min; j <= x_max; j++) {
             int u = 0;

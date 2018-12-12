@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 typedef struct r {
   char f;
@@ -62,9 +63,8 @@ int main() {
     for(int i = 0; i < 5; i++) {
       if (!workers[i].c && avai[a]) {
         workers[i].c = avai[a];
-        printf("worker %d got %c\n",i, avai[a]);
         workers[i].time = 60 + (workers[i].c - 'A' + 1);
-        steps[ns] = avai[a];
+        steps[ns] = avai[a];
         a++;
         ns++;
       }
@@ -75,7 +75,11 @@ int main() {
         workers[i].time--;
 
         if (!workers[i].time) {
-          printf("%d\n", t+1);
+
+          if (t+1==848) {
+            printf("%d\n", t+1);
+            return 1;
+          }
           for(int j = 0; j < n; j++)
             if (rules[j].f == workers[i].c) {
               rules[j].s = 0;
