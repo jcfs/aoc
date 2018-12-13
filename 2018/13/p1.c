@@ -12,17 +12,51 @@ typedef struct c {
   int x, y;
   char direction;
   int turn;
-  char p;
+  char dead;
+  char moved;
 } cart;
 
+cart carts[20];
+int n_carts = 0;
 
+void add(int x, int y, char dir) {
+  carts[n_carts].x = x;
+  carts[n_carts].y = y;
+  carts[n_carts].direction = dir;
+  n_carts++;
+}
 
-cart carts[1000];
+void rem(int x, int y) {
+  for(int i = 0; i < n_carts; i++)
+    if (carts[i].x == x && carts[i].y == y) carts[i].dead = 1;
+}
 
-char c[1000][1000];
+int size() {
+  int s = 0;
+  for(int i = 0; i < n_carts; i++)
+    if (!carts[i].dead) s++;
+
+  return s;
+}
+
+cart * get(int x, int y) {
+
+  for(int i = 0; i < n_carts; i++)
+    if (!carts[i].moved && carts[i].x == x && carts[i].y == y) return &carts[i];
+
+  return NULL;
+}
+
+int count(int x, int y) {
+  int s = 0;              
+  for(int i = 0; i < n_carts; i++)
+    if (!carts[i].dead && carts[i].x == x && carts[i].y == y)
+      s++;                  
+
+  return s;               
+}
+
 char g[1000][1000];
-char cpy[1000][1000];
-int n_carts  = 0;
 
 int is_cart(char ch) {
   return ch == '<' || ch == 'v' || ch == '^' || ch == '>';
@@ -36,113 +70,121 @@ int get_dir(char ch) {
 }
 
 char get_ch(int dir) {
- if (dir == LEFT) return '<';
- if (dir == DOWN) return 'v';
- if (dir == UP) return '^';
- if (dir == RIGHT) return '>';
+  if (dir == LEFT) return '<';
+  if (dir == DOWN) return 'v';
+  if (dir == UP) return '^';
+  if (dir == RIGHT) return '>';
 }
 
-cart * get_cart(int x, int y) {
-  for(int k = 0; k < 1000; k++) {
-    if (carts[k].x == x && carts[k].y == y) return &carts[k];
+void print_r() {
+  for(int i = 0; i < n_carts; i++)
+    if (!carts[i].dead)
+      printf("%d,%d %c %d\n", carts[i].x, carts[i].y, get_ch(carts[i].direction), carts[i].turn);
+}
+
+void print_m(int n, int ml) {
+  for(int y = 0; y < n; y++) {
+    for(int x = 0; x < ml; x++) {
+      cart * t = get(x, y);
+      if (t != NULL && !t->dead) {
+        printf("%c", get_ch(t->direction));
+      } else 
+        printf("%c", g[y][x]);
+    }
+    printf("\n");
   }
-
-  return NULL;
 }
+
 
 char get_p(char ch) {
   if (ch == '<' || ch == '>') return '-';
   else return '|';
 }
 
-void copy(char src[1000][1000], char dst[1000][1000]) {
-  for(int i = 0; i < 1000; i++)
-    for(int j = 0; j < 1000; j++) {
-      dst[i][j] = src[i][j];
+int step2(int ml, int n) {
+
+  for(int i = 0; i < n_carts; i++) {
+    cart * tmp = &carts[i];
+    if (!tmp) continue;
+
+    if (tmp->dead) {
+      continue;
     }
-}
 
-int step(int n, int ml) {
-  copy(g, cpy);
-  for(int y = 0; y < n; y++) {
-    for(int x = 0; x < ml; x++) {
-      if (is_cart(g[y][x])) {
-//        printf("moving %d,%d\n", x, y);
-        cart * cc = get_cart(x, y);
 
-        int dir = get_dir(g[y][x]);
+    if (tmp->direction == RIGHT) {        
+      tmp->x++;                    
+    } else if (tmp->direction == LEFT) {  
+      tmp->x--;                    
+    } else if (tmp->direction == DOWN) {  
+      tmp->y++;                    
+    } else if (tmp->direction == UP) {    
+      tmp->y--;                    
+    }                          
 
-        int xf = x;
-        int yf = y;
+    int c = count(tmp->x, tmp->y);
+    if (c > 1) {
+      printf("CRASH %d, %d\n", tmp->x, tmp->y);
+      rem(tmp->x, tmp->y);
+    } else {
+      int xf = tmp->x;
+      int yf = tmp->y;
+      if (g[yf][xf] == '\\') {
+        if (tmp->direction == RIGHT) {
+          tmp->direction = DOWN;
+        } else if (tmp->direction == LEFT) {
+          tmp->direction = UP;
+        } else if (tmp->direction == UP) {
+          tmp->direction = LEFT;
+        } else if (tmp->direction == DOWN) {
+          tmp->direction = RIGHT;
+        }
+      } else if (g[yf][xf] == '/') {
+        if (tmp->direction == RIGHT) {
+          tmp->direction = UP;
+        } else if (tmp->direction == LEFT) {
+          tmp->direction = DOWN;
+        } else if (tmp->direction == UP) {
+          tmp->direction = RIGHT;
+        } else if (tmp->direction == DOWN) {
+          tmp->direction = LEFT;
+        }
+      }
 
-        if (dir == RIGHT) {
-          xf++;
-        } else if (dir == LEFT) {
-          xf--;
-        } else if (dir == DOWN) {
-          yf++;
-        } else if (dir == UP) {
-          yf--;
+      char cy = g[yf][xf];
+
+      if (cy == '+') {
+        if (tmp->turn == 0) {
+          if (tmp->direction == RIGHT) tmp->direction = UP;
+          else if (tmp->direction == UP) tmp->direction = LEFT;
+          else if (tmp->direction == DOWN) tmp->direction = RIGHT;
+          else if (tmp->direction == LEFT) tmp->direction = DOWN;
+        } else if (tmp->turn == 2) {
+          if (tmp->direction == RIGHT) tmp->direction = DOWN;
+          else if (tmp->direction == UP) tmp->direction = RIGHT;
+          else if (tmp->direction == DOWN) tmp->direction = LEFT;
+          else if (tmp->direction == LEFT) tmp->direction = UP;
         }
 
-        if (is_cart(cpy[yf][xf])) {
-          printf("%d,%d\n", xf, yf);
-          return -1;
+        tmp->turn++;
+        if (tmp->turn > 2) {
+          tmp->turn = 0;
         }
-
-        if (cpy[yf][xf] == '\\') {
-          if (cc->direction == RIGHT) {
-            cc->direction = DOWN;
-          } else if (cc->direction == LEFT) {
-            cc->direction = UP;
-          } else if (cc->direction == UP) {
-            cc->direction = LEFT;
-          } else if (cc->direction == DOWN) {
-            cc->direction = RIGHT;
-          }
-        } else if (cpy[yf][xf] == '/') {
-          if (cc->direction == RIGHT) {
-            cc->direction = UP;
-          } else if (cc->direction == LEFT) {
-            cc->direction = DOWN;
-          } else if (cc->direction == UP) {
-            cc->direction = RIGHT;
-          } else if (cc->direction == DOWN) {
-            cc->direction = LEFT;
-          }
-        }
-
-        cpy[y][x] = cc->p;
-        cc->p = g[yf][xf];
-        cc->x = xf;
-        cc->y = yf;
-
-
-        if (cc->p == '+') {
-          if (cc->turn == 0) {
-            if (dir == RIGHT) cc->direction = UP;
-            if (dir == UP) cc->direction = LEFT;
-            if (dir == DOWN) cc->direction = RIGHT;
-            if (dir == LEFT) cc->direction = DOWN;
-          } else if (cc->turn == 2) {
-            if (dir == RIGHT) cc->direction = DOWN;
-            if (dir == UP) cc->direction = RIGHT;
-            if (dir == DOWN) cc->direction = LEFT;
-            if (dir == LEFT) cc->direction = UP;
-          }
-
-          cc->turn++;
-          if (cc->turn > 2) cc->turn = 0;
-        }
-
-        cpy[yf][xf] = get_ch(cc->direction);
-
       }
     }
   }
-
-  copy(cpy, g);
 }
+
+int compare (const void * a, const void * b)
+{
+
+  cart *ca = (cart *)a;
+  cart *cb = (cart *)b;
+
+  if (ca->y == cb->y) return ca->x - cb->x;
+  else ca->y - cb->y;
+}
+
 
 int main() {
   int n = 0;
@@ -153,36 +195,29 @@ int main() {
   }
 
   for(int i = 0; i < n; i++) {
-    g[i][strlen(g[i])] = 0;
+    g[i][strlen(g[i])-1] = 0;
     if (strlen(g[i]) > ml) {
       ml = strlen(g[i]);
     }
   }
 
-  for(int i = 0; i < 1000; i++) {
-    for(int j = 0; j < n; j++) {
-      if (is_cart(g[j][i])) {
-        c[j][i] = 1;
-        carts[n_carts].x = i;
-        carts[n_carts].y = j;
-        carts[n_carts].direction = get_dir(g[j][i]);
-        carts[n_carts].p = get_p(g[j][i]);
-        n_carts++;
+  for(int y = 0; y < n; y++) {
+    for(int x = 0; x < ml; x++) {
+      if (is_cart(g[y][x])) {
+        add(x, y, get_dir(g[y][x]));
+        g[y][x] = get_p(g[y][x]);
       }
     }
   }
 
-  int r = 5;
-  printf("%d\n", ml);
   while(1) {
-    /*
-    for(int i = 0; i < n; i++) {
-      for(int j = 0; j < ml; j++) {
-        printf("%c", g[i][j]);
-      }
-      printf("\n");
-    }*/
-    if (step(n, ml) == -1) return 0;
+    qsort (carts, n_carts, sizeof(cart), compare);
+
+    step2(ml, n);
+    if (size() <= 1) {
+      print_r();
+      break;
+    }
   }
-  
+
 }
