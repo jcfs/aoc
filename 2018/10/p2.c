@@ -5,7 +5,7 @@ typedef struct p {
   int vx, vy;
 } point;
 
-point s[1000];
+point s[100000];
 
 int main() {
   int p = 0;
@@ -41,7 +41,7 @@ int main() {
     if (((x_max - x_min) * (y_max-y_min)) < d_min) {
       d_min = ((x_max - x_min) * (y_max-y_min));
 
-      if (d_min < 1000) {
+      if (d_min < 8000) {
         printf("%d\n", d_min);
         for(int i = y_min; i <= y_max; i++) {
           for(int j = x_min; j <= x_max; j++) {
