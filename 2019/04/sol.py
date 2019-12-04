@@ -1,5 +1,4 @@
 def has_f_digits(s, f):
-  total = {}
   for c in s:
     if f(s.count(c)):
       return True
@@ -20,4 +19,4 @@ for i in range(245318, 765747):
 
 print("p1", c_1)
 print("p2", c_2)
-  
+
