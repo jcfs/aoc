@@ -2,7 +2,7 @@ def parse_opcode(line, pc, opc):
     c = str(line[pc]).rjust(5, '0')
     op = opc[int(c[-2:])]
 
-    r = {}
+    r = {'line': line, 'pc': pc}
     for i in range(1, op[1]):
         r[f"arg{i}"] = line[pc + i] if c[3 - i] == '1' else line[line[pc + i]]
 
@@ -53,7 +53,7 @@ def process(line):
     pc = 0
     while True:
         tp = parse_opcode(line, pc, opcodes)
-        pc = tp[0](line, pc, **tp[1])
+        pc = tp[0](**tp[1])
         if line[pc] == 99:
             break
 
