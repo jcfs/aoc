@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 a = defaultdict(list)
 
 def bfs(graph, start, goal):
