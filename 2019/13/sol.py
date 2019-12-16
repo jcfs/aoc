@@ -26,9 +26,13 @@ class IntCodeVm:
     return r
 
   def get_output(self):
-    return self.output
+    out = self.output
+    self.output = []
+    return out
 
-  def run(self):
+  def run(self, i = None):
+    if i is not None:
+      self.input.append(i)
     while self.code[self.pc] != 99:
       tp = self.parse_opcode()
       opcode = self.code[self.pc] % 100
@@ -67,12 +71,31 @@ class IntCodeVm:
     return True
 
 line = [int(x) for x in open('in').readline().strip().split(",")] + [0] * 5048
+line[0] = 2
 
-vm = IntCodeVm(line, input=[1])
-vm.run()
-print("p1", vm.get_output())
-vm = IntCodeVm(line, input=[2])
-vm.run()
-print("p2", vm.get_output())
+vm = IntCodeVm(line)
+f = vm.run(0)
+o = vm.get_output()
 
+def count_blocks(o):
+  return len([i for i in range(2, len(o), 3) if o[i] == 2])
 
+def get_obj(o, obj):
+    for i in range(2, len(o), 3):
+      if o[i] == obj:
+        return (o[i-2], o[i-1])
+
+print("p1", count_blocks(o))
+
+while not f:
+  ball = get_obj(o, 4) or ball
+  pad = get_obj(o, 3) or pad
+  
+  if ball[0] > pad[0]:
+    f = vm.run(1)
+  elif ball[0] < pad[0]:
+    f = vm.run(-1)
+
+  o = vm.get_output()
+  
+print("p2", o[-1])

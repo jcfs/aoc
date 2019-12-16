@@ -1,3 +1,6 @@
+import sys
+from collections import defaultdict
+
 class IntCodeVm:
   def __init__(self, code, pc = 0, input = []):
     self.code = code.copy()
@@ -26,9 +29,12 @@ class IntCodeVm:
     return r
 
   def get_output(self):
-    return self.output
+    out = self.output
+    self.output = []
+    return out
 
-  def run(self):
+  def run(self, i):
+    self.input.append(i)
     while self.code[self.pc] != 99:
       tp = self.parse_opcode()
       opcode = self.code[self.pc] % 100
@@ -68,11 +74,77 @@ class IntCodeVm:
 
 line = [int(x) for x in open('in').readline().strip().split(",")] + [0] * 5048
 
-vm = IntCodeVm(line, input=[1])
-vm.run()
-print("p1", vm.get_output())
-vm = IntCodeVm(line, input=[2])
-vm.run()
-print("p2", vm.get_output())
+vm = IntCodeVm(line)
+coords = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+walls = []
+oxy = []
+
+def get_neighboors(s, d):
+  n = []
+  for i in range(len(coords)):
+    npos = (s[0]+coords[i][0], s[1]+coords[i][1])
+    vm.run(i + 1)
+    o = vm.get_output()[-1]
+    if o != 0:
+      if o == 2:
+        oxy.append(npos)
+        print("p1", d)
+      n.append((npos, i+1))
+
+      if i+1 == 1: vm.run(2)
+      if i+1 == 2: vm.run(1)
+      if i+1 == 3: vm.run(4)
+      if i+1 == 4: vm.run(3)
+
+    if o == 0:
+      walls.append(npos)
+  return n
+
+def dfs(s, dir = 0, visited = None, d = 1):
+  if visited is None:
+    visited = set()
+
+  if s not in visited:
+    visited.add(s)
+    n = get_neighboors(s, d)
+    for ni in n:
+      vm.run(ni[1])
+      dfs(ni[0], ni[1], visited, d + 1)
+      if ni[1] == 1: vm.run(2)
+      elif ni[1] == 2: vm.run(1)
+      elif ni[1] == 3: vm.run(4)
+      elif ni[1] == 4: vm.run(3)
+
+  return visited
+
+def bfs(s):
+  v = []
+  q = [[s]]
+
+  dists = defaultdict(int)
+
+  while len(q) > 0:
+    path = q.pop()
+    current = path[-1]
+    if current not in v:
+      v.append(current)
+
+      n = []
+      for i in range(len(coords)):
+        npos = (current[0]+coords[i][0], current[1]+coords[i][1])
+        if npos not in walls:
+          n.append(npos)
+
+      for ni in n:
+        new_path = list(path)
+        new_path.append(ni)
+        q.append(new_path)
+        dists[ni] = dists[current] + 1
+  return dists;
+
+dfs((0,0))
+dists = bfs(oxy[0])
+
+print("p2", max(dists.values()) - 1)
 
 
